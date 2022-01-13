@@ -35,18 +35,14 @@ stock_data = stock_response.json()
 yesterday_price = float(stock_data['Time Series (Daily)'][str(yesterday)]['4. close'])
 daybe4_price = float(stock_data['Time Series (Daily)'][str(daybe4)]['4. close'])
 price_diff = abs(yesterday_price - daybe4_price)
-print(price_diff)
 percentage_price_diff = ((price_diff / daybe4_price) * 100)
 if percentage_price_diff > 2:
     news_response = requests.get(url="https://newsapi.org/v2/everything", params=news_parameters)
     news_response.raise_for_status()
     news_data = news_response.json()
-    print(json.dumps(news_data["articles"][:3], indent=4))
     news_article = news_data["articles"][:3]
 
     news_articles = [[item['title'], item['description']] for item in news_article]
-    print(news_articles)
-    print(type(news_articles))
     message = ""
     for news in news_articles:
         message += '\n'.join(news)
