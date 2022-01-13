@@ -14,6 +14,7 @@ STO_API_KEY = os.environ.get("STOCK_API_KEY")
 NEWS_API_KEY = os.environ.get("NEWS_API_KEY")
 account_sid = os.environ.get("OWN_ACCOUNT_SID")
 auth_token = os.environ.get("OWN_AUTH_TOKEN")
+message = STOCK_NAME
 
 stock_parameters = {
     "function": "TIME_SERIES_DAILY",
@@ -34,7 +35,12 @@ stock_response.raise_for_status()
 stock_data = stock_response.json()
 yesterday_price = float(stock_data['Time Series (Daily)'][str(yesterday)]['4. close'])
 daybe4_price = float(stock_data['Time Series (Daily)'][str(daybe4)]['4. close'])
-price_diff = abs(yesterday_price - daybe4_price)
+price_diff = yesterday_price - daybe4_price
+if price_diff < 0:
+    message += "🔻"
+else:
+    message += "🔼"
+price_diff = abs(price_diff)
 percentage_price_diff = ((price_diff / daybe4_price) * 100)
 if percentage_price_diff > 2:
     news_response = requests.get(url="https://newsapi.org/v2/everything", params=news_parameters)
@@ -42,10 +48,10 @@ if percentage_price_diff > 2:
     news_data = news_response.json()
     news_article = news_data["articles"][:3]
 
-    news_articles = [[item['title'], item['description']] for item in news_article]
-    message = ""
+    news_articles = [f"Headline: {item['title']}, \n\nBrief: {item['description']}" for item in news_article]
+    print(news_articles)
     for news in news_articles:
-        message += '\n'.join(news)
+        message += '\n' + news
         message += '\n\n'
     today = date.today()
     client = Client(account_sid, auth_token)
