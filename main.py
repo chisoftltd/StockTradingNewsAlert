@@ -51,7 +51,7 @@ if percentage_price_diff > 2:
     client = Client(account_sid, auth_token)
     message = client.messages \
         .create(
-        body=f"Stock news at {today.strftime('%d/%m/%Y %h:%m')} for {COMPANY_NAME} are: \n\n"
+        body=f"Stock news at {today.strftime('%d/%m/%Y %H:%M')} for {COMPANY_NAME} are: \n\n"
              f"{message}",
         from_='+19388000690',
         to='+447597044364'
